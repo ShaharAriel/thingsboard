@@ -89,6 +89,7 @@
     <modules>
         <module>netty-mqtt</module>
         <module>common</module>
+        <module>tb-bridge</module>
         <module>rule-engine</module>
         <module>dao</module>
         <module>transport</module>
