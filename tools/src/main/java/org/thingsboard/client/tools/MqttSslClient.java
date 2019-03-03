@@ -78,10 +78,10 @@ public class MqttSslClient {
             message.setPayload("{\"key1\":\"value1\", \"key2\":true, \"key3\": 3.0, \"key4\": 4}".getBytes());
             client.publish("v1/devices/me/telemetry", message);
             client.disconnect();
-            log.info("Disconnected");
+            //log.info("Disconnected");
             System.exit(0);
         } catch (Exception e) {
-            log.error("Unexpected exception occurred in MqttSslClient", e);
+            //log.error("Unexpected exception occurred in MqttSslClient", e);
         }
     }
 }

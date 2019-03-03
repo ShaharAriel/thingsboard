@@ -1,5 +1,12 @@
 package bridge;
 
+
+import converter.TelitConverter;
+import org.thingsboard.client.tools.RestClient;
+import org.thingsboard.server.common.data.Device;
+import org.thingsboard.server.common.msg.TbMsg;
+import org.thingsboard.server.dao.util.mapping.JacksonUtil;
+
 import javax.bluetooth.*;
 import javax.microedition.io.Connector;
 import javax.microedition.io.StreamConnection;
@@ -12,7 +19,7 @@ import java.util.ArrayList;
 public class MyDiscoveryListener implements DiscoveryListener {
 
     public static final int UUID_COMM = 0x1101;
-    private static Object lock = new Object();
+    private static final Object lock = new Object();
     public ArrayList<RemoteDevice> devices;
 
     public MyDiscoveryListener() {
@@ -112,8 +119,8 @@ public class MyDiscoveryListener implements DiscoveryListener {
 
 
     public void servicesDiscovered(int transID, ServiceRecord[] servRecord) {
-        for (int i = 0; i < servRecord.length; i++) {
-            String url = servRecord[i].getConnectionURL(ServiceRecord.NOAUTHENTICATE_NOENCRYPT, false);
+        for (ServiceRecord aServRecord : servRecord) {
+            String url = aServRecord.getConnectionURL(ServiceRecord.NOAUTHENTICATE_NOENCRYPT, false);
             if (url == null) {
                 continue;
             }
@@ -137,6 +144,7 @@ public class MyDiscoveryListener implements DiscoveryListener {
         try {
             System.out.println("Connecting to " + serverURL);
 
+
             StreamConnection clientSession = (StreamConnection) Connector.open(serverURL);
 //            HeaderSet hsConnectReply = clientSession.connect(null);
            /* if (hsConnectReply.getResponseCode() != ResponseCodes.OBEX_HTTP_OK) {
@@ -152,7 +160,6 @@ public class MyDiscoveryListener implements DiscoveryListener {
 //            Operation putOperation = clientSession.put(hsOperation);
 
             // Send some text to server
-            byte data[] = new byte[1024];
             InputStream os = clientSession.openInputStream();
 
             BufferedReader inputStream = new BufferedReader(new InputStreamReader(os));
@@ -161,7 +168,12 @@ public class MyDiscoveryListener implements DiscoveryListener {
                 int beginIndex = line.indexOf('{');
                 if (beginIndex > 0) {
                     String substring = line.substring(beginIndex);
-                    System.out.println("data" + substring);
+                    System.out.println("data:" + substring);
+
+                    TelitMsg telitMsg = JacksonUtil.fromString(substring, TelitMsg.class);
+                    TbMsg from = TelitConverter.from(telitMsg);
+                    RestClient restClient = new RestClient();
+                    Device device = restClient.createDevice("", "default");
                 }
 
             }
