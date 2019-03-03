@@ -399,6 +399,11 @@
             </dependency>
             <dependency>
                 <groupId>org.thingsboard</groupId>
+                <artifactId>tb-bridge</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.thingsboard</groupId>
                 <artifactId>tools</artifactId>
                 <version>${project.version}</version>
                 <scope>test</scope>

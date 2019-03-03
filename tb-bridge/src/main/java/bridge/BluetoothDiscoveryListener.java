@@ -4,6 +4,7 @@ package bridge;
 import converter.TelitConverter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.thingsboard.client.tools.RestClient;
 import org.thingsboard.server.common.data.Device;
 import org.thingsboard.server.common.msg.TbMsg;
@@ -18,7 +19,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 @Slf4j
-@Component
+@Service
 public class BluetoothDiscoveryListener implements DiscoveryListener {
 
     public static final int UUID_COMM = 0x1101;
