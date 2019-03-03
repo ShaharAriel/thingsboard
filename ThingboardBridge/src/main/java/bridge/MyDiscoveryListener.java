@@ -172,8 +172,8 @@ public class MyDiscoveryListener implements DiscoveryListener {
 
                     TelitMsg telitMsg = JacksonUtil.fromString(substring, TelitMsg.class);
                     TbMsg from = TelitConverter.from(telitMsg);
-                    RestClient restClient = new RestClient();
-                    Device device = restClient.createDevice("", "default");
+                   // RestClient restClient = new RestClient();
+//                    Device device = restClient.createDevice("", "default");
                 }
 
             }
