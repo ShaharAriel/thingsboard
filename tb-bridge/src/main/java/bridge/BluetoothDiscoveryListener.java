@@ -3,18 +3,17 @@ package bridge;
 
 import converter.TelitConverter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.thingsboard.client.tools.RestClient;
 import org.thingsboard.server.common.data.Device;
 import org.thingsboard.server.common.msg.TbMsg;
 import org.thingsboard.server.dao.util.mapping.JacksonUtil;
 
-import javax.annotation.PostConstruct;
 import javax.bluetooth.*;
 import javax.microedition.io.Connector;
 import javax.microedition.io.StreamConnection;
-import java.io.BufferedReader;import java.io.InputStream;
+import java.io.BufferedReader;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
@@ -33,11 +32,10 @@ public class BluetoothDiscoveryListener implements DiscoveryListener {
     private  DiscoveryAgent agent;
 
     public BluetoothDiscoveryListener() {
-        devices = new ArrayList<RemoteDevice>();
+        devices = new ArrayList<>();
     }
 
-    @PostConstruct
-    void startInquiry()
+    public void startInquiry()
     {
         log.info("startInquiry");
         try {
@@ -97,8 +95,7 @@ public class BluetoothDiscoveryListener implements DiscoveryListener {
 
     private  void sendMessageToDevice(String serverURL) {
         try {
-            System.out.println("Connecting to " + serverURL);
-
+            log.info("Connecting to " + serverURL);
 
             StreamConnection clientSession = (StreamConnection) Connector.open(serverURL);
 
@@ -111,7 +108,6 @@ public class BluetoothDiscoveryListener implements DiscoveryListener {
                 if (beginIndex > 0) {
                     String substring = line.substring(beginIndex);
                     log.info("data:" + substring);
-
                     TelitMsg telitMsg = JacksonUtil.fromString(substring, TelitMsg.class);
                     TbMsg from = TelitConverter.from(telitMsg);
                     RestClient restClient = new RestClient("https://localhost");
