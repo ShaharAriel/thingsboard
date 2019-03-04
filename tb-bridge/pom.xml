@@ -56,6 +56,7 @@
         <dependency>
             <groupId>org.thingsboard</groupId>
             <artifactId>dw-bridge</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
     </dependencies>

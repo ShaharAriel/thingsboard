@@ -31,7 +31,6 @@ import com.devicewise.tr50.clients.DwHttpClient;
 import com.devicewise.tr50.exception.DwOpenException;
 import com.devicewise.tr50.protocol.DwOpenWorker;
 
-import org.json.JSONException;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
@@ -51,7 +50,7 @@ public class HttpConnectSample {
 
     private static String appToken;
 
-    public static void main(String[] args) throws JSONException {
+    public static void main(String[] args)  {
 
 
         try {

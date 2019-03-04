@@ -30,9 +30,11 @@ public class BluetoothDiscoveryListener implements DiscoveryListener {
     }
 
     private  DiscoveryAgent agent;
+    private RestClient restClient;
 
     public BluetoothDiscoveryListener() {
         devices = new ArrayList<>();
+        restClient = new RestClient("https://localhost");
     }
 
     public void startInquiry()
@@ -48,6 +50,10 @@ public class BluetoothDiscoveryListener implements DiscoveryListener {
 
     }
 
+    public static void main(String args[]) {
+        new BluetoothDiscoveryListener().startInquiry();
+        while (true);
+    }
 
 
     public void deviceDiscovered(RemoteDevice btDevice, DeviceClass arg1) {
@@ -57,9 +63,10 @@ public class BluetoothDiscoveryListener implements DiscoveryListener {
         } catch (Exception e) {
             name = btDevice.getBluetoothAddress();
         }
+        log.info("deviceDiscovered:[{}]",name);
 
         if (name.equals("HC-05")) {
-            System.out.println("searchServices: " + name);
+            log.info("searchServices: " + name);
             try {
                 agent.searchServices(
                         null, UUID_SET, btDevice, this);
@@ -68,7 +75,7 @@ public class BluetoothDiscoveryListener implements DiscoveryListener {
             }
         }
 
-        System.out.println("Service search finished.");
+        log.info("Service search finished.");
     }
 
 
@@ -106,13 +113,18 @@ public class BluetoothDiscoveryListener implements DiscoveryListener {
             while ((line = inputStream.readLine()) != null) {
                 int beginIndex = line.indexOf('{');
                 if (beginIndex > 0) {
-                    String substring = line.substring(beginIndex);
+                    String substring = line.substring(beginIndex).trim();
                     log.info("data:" + substring);
-                    TelitMsg telitMsg = JacksonUtil.fromString(substring, TelitMsg.class);
-                    TbMsg from = TelitConverter.from(telitMsg);
-                    RestClient restClient = new RestClient("https://localhost");
+                    if(!substring.endsWith("}"))
+                        return;
+
+                    log.info("json:" + substring);
+//                    String telitMsg = JacksonUtil.fromString(substring, String.class);
+//                    TbMsg from = TelitConverter.from(telitMsg);
+
                     restClient.login("tenant@thingsboard.org", "tenant");
                     Device device = restClient.createDevice("mydevice", "default");
+                    log.info("device:name[{}] type[{}]" + device.getName(),device.getType());
                 }
 
             }
@@ -122,6 +134,7 @@ public class BluetoothDiscoveryListener implements DiscoveryListener {
             clientSession.close();
         } catch (Exception e) {
             e.printStackTrace();
+            log.error(e.getMessage(),e);
         }
     }
 

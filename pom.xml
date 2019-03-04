@@ -90,6 +90,7 @@
         <module>netty-mqtt</module>
         <module>common</module>
         <module>tb-bridge</module>
+        <module>devicewise</module>
         <module>rule-engine</module>
         <module>dao</module>
         <module>transport</module>
@@ -400,6 +401,11 @@
             <dependency>
                 <groupId>org.thingsboard</groupId>
                 <artifactId>tb-bridge</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.thingsboard</groupId>
+                <artifactId>dw-bridge</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
