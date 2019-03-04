@@ -9,12 +9,11 @@ import javax.annotation.PostConstruct;
 @Service
 public class TelitBridge {
 
+    @Autowired
+    BluetoothDiscoveryListener listener;
 
     @PostConstruct
     void init() {
-        BluetoothDiscoveryListener listener =
-                new BluetoothDiscoveryListener();
-
         listener.startInquiry();
     }
 
