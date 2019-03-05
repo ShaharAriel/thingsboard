@@ -38,7 +38,6 @@ import java.util.ArrayList;
 public class BluetoothDiscoveryListener implements DiscoveryListener {
 
     public static final int UUID_COMM = 0x1101;
-    public ArrayList<RemoteDevice> devices;
     public static final UUID[] UUID_SET = new UUID[1];
 
     static {
@@ -48,11 +47,12 @@ public class BluetoothDiscoveryListener implements DiscoveryListener {
     private  DiscoveryAgent agent;
     private RestClient restClient;
 
-    public BluetoothDiscoveryListener() throws Exception {
-        devices = new ArrayList<>();
-        restClient = new RestClient("https://localhost:8080");
-        restClient.getRestTemplate().setRequestFactory(getRequestFactoryForSelfSignedCert());
-        restClient.login("tenant@thingsboard.org", "tenant");
+    public BluetoothDiscoveryListener()  {
+        restClient = new RestClient("http://localhost:8080");
+//        restClient.getRestTemplate().setRequestFactory(getRequestFactoryForSelfSignedCert());
+        restClient.login("arielshahar8@gmail.com", "12345678");
+        Device device = restClient.createDevice("mydevice2", "default");
+        log.info("device:name[{}] type[{}]" , device.getName(),device.getType());
 
     }
 
@@ -70,7 +70,8 @@ public class BluetoothDiscoveryListener implements DiscoveryListener {
     }
 
     public static void main(String args[]) throws Exception {
-        new BluetoothDiscoveryListener().startInquiry();
+        new BluetoothDiscoveryListener();//.startInquiry();
+
         while (true);
     }
 
