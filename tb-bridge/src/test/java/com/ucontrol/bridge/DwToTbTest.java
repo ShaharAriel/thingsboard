@@ -1,17 +1,19 @@
 package com.ucontrol.bridge;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import bridge.BluetoothDiscoveryListener;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import converter.TelitConverter;
 import model.DwCommand;
+import org.junit.Test;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class DwToTbTest {
 
-    public static void main(String[] args) throws IOException {
+    public static String getTelitJson() throws JsonProcessingException {
 
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode jsonNodes = mapper.createObjectNode();
@@ -19,52 +21,71 @@ public class DwToTbTest {
         ObjectNode cmd1 = cmd.putObject("1");
         cmd1.put("command", "property.publish");
         ObjectNode params = cmd1.putObject("params");
-        params.put("thingKey", "mtng");
-        params.put("key", "mtng");
-        params.put("value", 0.3);
-        params.put("ts", "2014-08");
-        params.put("corrId", "2014-08");
+        params.put("thingKey", "Arm_10");
+        params.put("key", "temp");
+        params.put("value", 1.3);
+//        params.put("ts", "2014-08");
+        params.put("corrId", "2019-03-10T17:36.322Z");
         ObjectNode cmd2 = cmd.putObject("2");
         ObjectNode command2 = cmd2.put("command", "alarm.publish");
         ObjectNode params2 = command2.putObject("params");
-        params2.put("thingKey", "mtng");
-        params2.put("key", "mtng");
-        params2.put("value", 0.3);
-        params2.put("ts", "2014-08");
+        params2.put("thingKey", "Arm_10");
+        params2.put("key", "temp2");
+        params2.put("value", 100);
+        params2.put("ts", "2019-03-10T17:36.322Z");
+        params2.put("name", "2014-08");
         params2.put("corrId", "2014-08");
 
         String json = mapper.writeValueAsString(jsonNodes);
         System.out.println(json);
 
-        List<DwCommand> commands = JsonToCmd(json);
+        return json;
+//        List<DwCommand> commands = JsonToCmd(json);
     }
 
-    private static List<DwCommand> JsonToCmd(String json) throws IOException {
 
-        ObjectMapper mapper = new ObjectMapper();
+    public static void main(String[] args) {
+        new BluetoothDiscoveryListener().startInquiry();
+        while (true) ;
+    }
 
-        JsonNode objectNode = mapper.reader().readTree(json);
-        JsonNode node = objectNode.get("cmd");
-        List<DwCommand> commands = new ArrayList<>();
+    @Test
+    public void testJson2Tb() throws JsonProcessingException {
+        TelitConverter mTelitConverter = new TelitConverter();
 
-        for (int i = 0; i < 10; i++) {
+        Scanner scanner = new Scanner(getTelitJson());
+        String data = "";
 
-            String fieldName = String.valueOf(i);
-            if (node.has(fieldName)) {
+        while (!data.equals("-1")) {
 
-                DwCommand dwCommand = getCommand(mapper, node, fieldName);
-                commands.add(dwCommand);
+            System.out.println("Enter json: ");
+            data = scanner.nextLine();
+            try {
+                int beginIndex = data.indexOf('{');
 
-                System.out.println(dwCommand.getParams().getValue());
+                if (beginIndex < 0 || !data.endsWith("}")) {
+                    System.out.println(String.format("Not a json:%s %d,ends %d",
+                            data, beginIndex, data.endsWith("}") ? 1 : 0));
+                    return;
+                }
+
+                String json = data.substring(beginIndex).trim();
+                System.out.println("json:" + json);
+
+                List<DwCommand> telitMsg = TelitConverter.JsonToCmd(json);
+
+                for (DwCommand command : telitMsg) {
+
+                    mTelitConverter.from(command);
+
+                    System.out.println(command.getParams().getValue());
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+
         }
-        return commands;
     }
 
-    private static DwCommand getCommand(ObjectMapper mapper, JsonNode node, String fieldName) throws IOException {
-        JsonNode jsonNode = node.get(fieldName);
-        String value = mapper.writeValueAsString(jsonNode);
-
-        return mapper.readValue(value, DwCommand.class);
-    }
 }

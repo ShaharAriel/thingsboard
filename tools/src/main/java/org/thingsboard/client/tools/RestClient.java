@@ -54,6 +54,7 @@ public class RestClient implements ClientHttpRequestInterceptor {
     private final RestTemplate restTemplate = new RestTemplate();
     private String token;
     private final String baseURL;
+    private String relationType;
 
     public void login(String username, String password) {
         Map<String, String> loginRequest = new HashMap<>();
@@ -62,6 +63,10 @@ public class RestClient implements ClientHttpRequestInterceptor {
         ResponseEntity<JsonNode> tokenInfo = restTemplate.postForEntity(baseURL + "/api/auth/login", loginRequest, JsonNode.class);
         this.token = tokenInfo.getBody().get("token").asText();
         restTemplate.setInterceptors(Collections.singletonList(this));
+    }
+
+    public boolean isLogin(){
+        return token != null;
     }
 
     public Optional<Device> findDevice(String name) {
@@ -180,10 +185,11 @@ public class RestClient implements ClientHttpRequestInterceptor {
         return restTemplate.postForEntity(baseURL + "/api/v1/{accessToken}/telemetry", json, String.class, accessToken).getBody();
     }
 
-    public String publishTelemetry(String deviceId, String json) {
+    public String publishTelemetry(String accessToken, String json) {
 
-        String accessToken = getCredentials(DeviceId.fromString(deviceId)).getCredentialsId();
+//        String accessToken = getCredentials(DeviceId.fromString(deviceId)).getCredentialsId();
 
+        //fixme dynamic token
         return restTemplate.postForEntity(baseURL + "/api/v1/{accessToken}/telemetry", json, String.class, accessToken).getBody();
     }
 

@@ -89,6 +89,7 @@
         <dependency>
             <groupId>org.thingsboard</groupId>
             <artifactId>tools</artifactId>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

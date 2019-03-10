@@ -45,10 +45,6 @@
             <artifactId>http</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.thingsboard</groupId>
-            <artifactId>tb-bridge</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.thingsboard.common</groupId>
             <artifactId>queue</artifactId>
         </dependency>

@@ -3,6 +3,7 @@ package bridge;
 
 import converter.TelitConverter;
 import lombok.extern.slf4j.Slf4j;
+import model.DwCommand;
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
@@ -16,10 +17,6 @@ import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.ssl.SSLContexts;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
-import org.thingsboard.client.tools.RestClient;
-import org.thingsboard.server.common.data.Device;
-import org.thingsboard.server.common.msg.TbMsg;
-import org.thingsboard.server.dao.util.mapping.JacksonUtil;
 
 import javax.bluetooth.*;
 import javax.microedition.io.Connector;
@@ -31,7 +28,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.security.cert.X509Certificate;
-import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -44,20 +41,15 @@ public class BluetoothDiscoveryListener implements DiscoveryListener {
         UUID_SET[0] = new UUID(UUID_COMM);
     }
 
-    private  DiscoveryAgent agent;
-    private RestClient restClient;
+    private DiscoveryAgent agent;
+    private TelitConverter mTelitConverter;
 
-    public BluetoothDiscoveryListener()  {
-        restClient = new RestClient("http://localhost:8080");
-//        restClient.getRestTemplate().setRequestFactory(getRequestFactoryForSelfSignedCert());
-        restClient.login("arielshahar8@gmail.com", "12345678");
-        Device device = restClient.createDevice("mydevice2", "default");
-        log.info("device:name[{}] type[{}]" , device.getName(),device.getType());
+    public BluetoothDiscoveryListener() {
+        mTelitConverter = new TelitConverter();
 
     }
 
-    public void startInquiry()
-    {
+    public void startInquiry() {
         log.info("startInquiry");
         try {
             LocalDevice localDevice = LocalDevice.getLocalDevice();
@@ -65,14 +57,9 @@ public class BluetoothDiscoveryListener implements DiscoveryListener {
             agent.startInquiry(DiscoveryAgent.GIAC, this);
         } catch (BluetoothStateException e) {
             e.printStackTrace();
+
         }
 
-    }
-
-    public static void main(String args[]) throws Exception {
-        new BluetoothDiscoveryListener();//.startInquiry();
-
-        while (true);
     }
 
 
@@ -83,7 +70,7 @@ public class BluetoothDiscoveryListener implements DiscoveryListener {
         } catch (Exception e) {
             name = btDevice.getBluetoothAddress();
         }
-        log.info("deviceDiscovered:[{}]",name);
+        log.info("deviceDiscovered:[{}]", name);
 
         if (name.equals("HC-05")) {
             log.info("searchServices: " + name);
@@ -115,35 +102,47 @@ public class BluetoothDiscoveryListener implements DiscoveryListener {
             if (url == null) {
                 continue;
             }
-            sendMessageToDevice(url);
-
+            receiveMessageFromDevice(url);
         }
     }
 
-    private  void sendMessageToDevice(String serverURL) {
+    private void receiveMessageFromDevice(String serverURL) {
         try {
             log.info("Connecting to " + serverURL);
 
             StreamConnection clientSession = (StreamConnection) Connector.open(serverURL);
-
             InputStream os = clientSession.openInputStream();
-
             BufferedReader inputStream = new BufferedReader(new InputStreamReader(os));
-            String line;
-            while ((line = inputStream.readLine()) != null) {
-                int beginIndex = line.indexOf('{');
 
-                if (beginIndex < 0 || !line.endsWith("}"))
-                    return;
+            String json;
+            while ((json = inputStream.readLine()) != null) {
 
-                    String substring = line.substring(beginIndex).trim();
-                    log.info("json:" + substring);
-                    TelitMsg telitMsg = JacksonUtil.fromString(substring, TelitMsg.class);
-//                    TbMsg from = TelitConverter.from(substring);
-//
-                    Device device = restClient.createDevice("mydevice", "default");
-                    log.info("device:name[{}] type[{}]" + device.getName(),device.getType());
+                log.info("bluetooth data is:{}", json);
 
+                int beginJsonTag = json.indexOf('{');
+                if (beginJsonTag > 0 && json.startsWith("AT#DWSENDR=") && json.endsWith("}")) {
+
+                    json = json.substring(beginJsonTag);
+
+                    log.info("bluetooth json is:{}", json);
+
+                    List<DwCommand> telitMsg = TelitConverter.JsonToCmd(json);
+
+                    for (DwCommand command : telitMsg) {
+                        try {
+                            mTelitConverter.from(command);
+                            log.info("bluetooth command is:{}", command.getCommand());
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            log.error(e.getMessage(), e);
+                        }
+                    }
+
+                } else {
+                    log.debug("verbose-data is:{}",
+                            beginJsonTag, json.endsWith("}") ? 1 : 0, json);
+                }
             }
 
             os.close();
@@ -151,7 +150,7 @@ public class BluetoothDiscoveryListener implements DiscoveryListener {
             clientSession.close();
         } catch (Exception e) {
             e.printStackTrace();
-            log.error(e.getMessage(),e);
+            log.error(e.getMessage(), e);
         }
     }
 

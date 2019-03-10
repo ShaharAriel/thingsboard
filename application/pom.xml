@@ -77,7 +77,10 @@
             <groupId>org.thingsboard</groupId>
             <artifactId>tb-bridge</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>org.thingsboard</groupId>
+            <artifactId>dw-bridge</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.thingsboard</groupId>
             <artifactId>dao</artifactId>
@@ -212,7 +215,7 @@
         <dependency>
             <groupId>org.thingsboard</groupId>
             <artifactId>tools</artifactId>
-            <scope>test</scope>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

@@ -1,1 +1,2 @@
 mvn clean install -Dmaven.clean.failOnError=false -Dlicense.skip=true  -DskipTests
+     Expand-Archive -Path "C:\Users\sariel\Projects\Ucontrol\Server\LocalBoard\application\target\thingsboard-windows.zip" -DestinationPath "C:\Users\sariel\Projects\Ucontrol\Server\LocalBoard\application\target\thingsboard-windows"
