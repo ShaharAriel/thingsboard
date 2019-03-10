@@ -1,12 +1,12 @@
 /**
  * Copyright © 2016-2018 The Thingsboard Authors
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -37,6 +37,7 @@ import org.thingsboard.server.common.data.id.EntityId;
 import org.thingsboard.server.common.data.relation.EntityRelation;
 import org.thingsboard.server.common.data.security.DeviceCredentials;
 import org.thingsboard.server.common.data.security.DeviceCredentialsType;
+import org.thingsboard.server.gen.transport.TransportProtos;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -170,6 +171,20 @@ public class RestClient implements ClientHttpRequestInterceptor {
 
     public Alarm createAlarm(Alarm alarm) {
         return restTemplate.postForEntity(baseURL + "/api/alarm", alarm, Alarm.class).getBody();
+    }
+
+    public String publishTelemetry(Device device, String json) {
+
+        String accessToken = getCredentials(device.getId()).getCredentialsId();
+
+        return restTemplate.postForEntity(baseURL + "/api/v1/{accessToken}/telemetry", json, String.class, accessToken).getBody();
+    }
+
+    public String publishTelemetry(String deviceId, String json) {
+
+        String accessToken = getCredentials(DeviceId.fromString(deviceId)).getCredentialsId();
+
+        return restTemplate.postForEntity(baseURL + "/api/v1/{accessToken}/telemetry", json, String.class, accessToken).getBody();
     }
 
     public void deleteCustomer(CustomerId customerId) {

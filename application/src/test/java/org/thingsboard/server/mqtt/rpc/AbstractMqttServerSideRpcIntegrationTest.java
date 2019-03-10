@@ -109,7 +109,7 @@ public abstract class AbstractMqttServerSideRpcIntegrationTest extends AbstractC
 
         client.subscribe("v1/devices/me/rpc/request/+", MqttQoS.AT_MOST_ONCE.value());
 
-        String setGpioRequest = "{\"method\":\"setGpio\",\"params\":{\"pin\": \"23\",\"value\": 1}}";
+        String setGpioRequest = "{\"method\":\"setGpio\",\"Params\":{\"pin\": \"23\",\"value\": 1}}";
         String deviceId = savedDevice.getId().getId().toString();
         String result = doPostAsync("/api/plugins/rpc/oneway/" + deviceId, setGpioRequest, String.class, status().isOk());
         Assert.assertTrue(StringUtils.isEmpty(result));
@@ -128,7 +128,7 @@ public abstract class AbstractMqttServerSideRpcIntegrationTest extends AbstractC
         String accessToken = deviceCredentials.getCredentialsId();
         assertNotNull(accessToken);
 
-        String setGpioRequest = "{\"method\":\"setGpio\",\"params\":{\"pin\": \"23\",\"value\": 1}}";
+        String setGpioRequest = "{\"method\":\"setGpio\",\"Params\":{\"pin\": \"23\",\"value\": 1}}";
         String deviceId = savedDevice.getId().getId().toString();
 
         doPostAsync("/api/plugins/rpc/oneway/" + deviceId, setGpioRequest, String.class, status().isRequestTimeout(),
@@ -137,7 +137,7 @@ public abstract class AbstractMqttServerSideRpcIntegrationTest extends AbstractC
 
     @Test
     public void testServerMqttOneWayRpcDeviceDoesNotExist() throws Exception {
-        String setGpioRequest = "{\"method\":\"setGpio\",\"params\":{\"pin\": \"23\",\"value\": 1}}";
+        String setGpioRequest = "{\"method\":\"setGpio\",\"Params\":{\"pin\": \"23\",\"value\": 1}}";
         String nonExistentDeviceId = UUIDs.timeBased().toString();
 
         String result = doPostAsync("/api/plugins/rpc/oneway/" + nonExistentDeviceId, setGpioRequest, String.class,
@@ -165,7 +165,7 @@ public abstract class AbstractMqttServerSideRpcIntegrationTest extends AbstractC
         client.subscribe("v1/devices/me/rpc/request/+", 1);
         client.setCallback(new TestMqttCallback(client, new CountDownLatch(1)));
 
-        String setGpioRequest = "{\"method\":\"setGpio\",\"params\":{\"pin\": \"23\",\"value\": 1}}";
+        String setGpioRequest = "{\"method\":\"setGpio\",\"Params\":{\"pin\": \"23\",\"value\": 1}}";
         String deviceId = savedDevice.getId().getId().toString();
 
         String result = doPostAsync("/api/plugins/rpc/twoway/" + deviceId, setGpioRequest, String.class, status().isOk());
@@ -183,7 +183,7 @@ public abstract class AbstractMqttServerSideRpcIntegrationTest extends AbstractC
         String accessToken = deviceCredentials.getCredentialsId();
         assertNotNull(accessToken);
 
-        String setGpioRequest = "{\"method\":\"setGpio\",\"params\":{\"pin\": \"23\",\"value\": 1}}";
+        String setGpioRequest = "{\"method\":\"setGpio\",\"Params\":{\"pin\": \"23\",\"value\": 1}}";
         String deviceId = savedDevice.getId().getId().toString();
 
         doPostAsync("/api/plugins/rpc/twoway/" + deviceId, setGpioRequest, String.class, status().isRequestTimeout(),
@@ -192,7 +192,7 @@ public abstract class AbstractMqttServerSideRpcIntegrationTest extends AbstractC
 
     @Test
     public void testServerMqttTwoWayRpcDeviceDoesNotExist() throws Exception {
-        String setGpioRequest = "{\"method\":\"setGpio\",\"params\":{\"pin\": \"23\",\"value\": 1}}";
+        String setGpioRequest = "{\"method\":\"setGpio\",\"Params\":{\"pin\": \"23\",\"value\": 1}}";
         String nonExistentDeviceId = UUIDs.timeBased().toString();
 
         String result = doPostAsync("/api/plugins/rpc/twoway/" + nonExistentDeviceId, setGpioRequest, String.class,

@@ -172,7 +172,7 @@ public class DefaultDeviceRpcService implements DeviceRpcService {
         metaData.putValue("oneway", Boolean.toString(msg.isOneway()));
 
         entityNode.put("method", msg.getBody().getMethod());
-        entityNode.put("params", msg.getBody().getParams());
+        entityNode.put("Params", msg.getBody().getParams());
 
         try {
             TbMsg tbMsg = new TbMsg(UUIDs.timeBased(), DataConstants.RPC_CALL_FROM_SERVER_TO_DEVICE, msg.getDeviceId(), metaData, TbMsgDataType.JSON

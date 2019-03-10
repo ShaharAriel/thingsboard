@@ -28,6 +28,7 @@ import com.devicewise.tr50.api.response.DwOpenResponse;
 import com.devicewise.tr50.api.response.session.DwOpenSessionInfo;
 import com.devicewise.tr50.api.response.thing.DwOpenThingList;
 import com.devicewise.tr50.clients.DwHttpClient;
+import com.devicewise.tr50.constants.DwOpenCommands;
 import com.devicewise.tr50.exception.DwOpenException;
 import com.devicewise.tr50.protocol.DwOpenWorker;
 
@@ -70,11 +71,7 @@ public class HttpConnectSample {
                 System.out.println("HTTP connect with Session Id failed with error code " + ret);
 
 
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (DwOpenException e) {
-            // TODO Auto-generated catch block
+        } catch (IOException | DwOpenException e) {
             e.printStackTrace();
         }
 
@@ -101,7 +98,6 @@ public class HttpConnectSample {
         client.getWorker().Session().info(session);
 
         if (thing.isSuccess()) {
-
 
             System.out.println("User " + session.getUserName() + " Connected!");
 

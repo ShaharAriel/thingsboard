@@ -108,7 +108,7 @@ public class RpcController extends BaseController {
         try {
             JsonNode rpcRequestBody = jsonMapper.readTree(requestBody);
             RpcRequest cmd = new RpcRequest(rpcRequestBody.get("method").asText(),
-                    jsonMapper.writeValueAsString(rpcRequestBody.get("params")));
+                    jsonMapper.writeValueAsString(rpcRequestBody.get("Params")));
 
             if (rpcRequestBody.has("timeout")) {
                 cmd.setTimeout(rpcRequestBody.get("timeout").asLong());

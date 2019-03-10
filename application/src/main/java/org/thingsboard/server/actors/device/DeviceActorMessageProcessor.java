@@ -337,7 +337,7 @@ class DeviceActorMessageProcessor extends AbstractContextAwareMsgProcessor {
         UUID sessionId = getSessionId(sessionInfo);
         JsonObject json = new JsonObject();
         json.addProperty("method", request.getMethodName());
-        json.add("params", jsonParser.parse(request.getParams()));
+        json.add("Params", jsonParser.parse(request.getParams()));
 
         TbMsgMetaData requestMetaData = defaultMetaData.copy();
         requestMetaData.putValue("requestId", Integer.toString(request.getRequestId()));

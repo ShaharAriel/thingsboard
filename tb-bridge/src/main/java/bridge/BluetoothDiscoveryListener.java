@@ -132,19 +132,17 @@ public class BluetoothDiscoveryListener implements DiscoveryListener {
             String line;
             while ((line = inputStream.readLine()) != null) {
                 int beginIndex = line.indexOf('{');
-                if (beginIndex > 0) {
+
+                if (beginIndex < 0 || !line.endsWith("}"))
+                    return;
+
                     String substring = line.substring(beginIndex).trim();
-                    log.info("data:" + substring);
-                    if(!substring.endsWith("}"))
-                        return;
-
                     log.info("json:" + substring);
-//                    String telitMsg = JacksonUtil.fromString(substring, String.class);
-//                    TbMsg from = TelitConverter.from(telitMsg);
-
+                    TelitMsg telitMsg = JacksonUtil.fromString(substring, TelitMsg.class);
+//                    TbMsg from = TelitConverter.from(substring);
+//
                     Device device = restClient.createDevice("mydevice", "default");
                     log.info("device:name[{}] type[{}]" + device.getName(),device.getType());
-                }
 
             }
 
