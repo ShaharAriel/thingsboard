@@ -235,6 +235,9 @@ public class RestClient implements ClientHttpRequestInterceptor {
         return token;
     }
 
+    public void resetToken(){
+        token = null;
+    }
     @Override
     public ClientHttpResponse intercept(HttpRequest request, byte[] bytes, ClientHttpRequestExecution execution) throws IOException {
         HttpRequest wrapper = new HttpRequestWrapper(request);

@@ -1,11 +1,14 @@
 package com.ucontrol.bridge;
 
 import bridge.BluetoothDiscoveryListener;
+import bridge.TelitMsg;
+import com.devicewise.tr50.constants.DwOpenCommands;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import converter.TelitConverter;
 import model.DwCommand;
+import model.Params;
 import org.junit.Test;
 
 import java.util.List;
@@ -45,8 +48,13 @@ public class DwToTbTest {
 
 
     public static void main(String[] args) {
-        new BluetoothDiscoveryListener().startInquiry();
-        while (true) ;
+        TelitConverter telitConverter = new TelitConverter();
+        DwCommand telitMsg = new DwCommand();
+        telitMsg.command = DwOpenCommands.CMD_API_THING_CREATE;
+        telitMsg.params = new Params();
+        telitMsg.params.setKey("Arm_mmm12");
+        telitConverter.from(telitMsg);
+
     }
 
     @Test

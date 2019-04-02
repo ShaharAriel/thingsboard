@@ -7,8 +7,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DwCommand {
 
-    private String command;
-    private Params params;
+    public String command;
+    public Params params;
 
     public String getCommand() {
         return command;

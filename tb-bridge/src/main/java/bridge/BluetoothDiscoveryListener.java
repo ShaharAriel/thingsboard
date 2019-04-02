@@ -119,7 +119,7 @@ public class BluetoothDiscoveryListener implements DiscoveryListener {
 
                 log.info("bluetooth data is:{}", json);
 
-                int beginJsonTag = json.indexOf('{');
+                int beginJsonTag = json.indexOf("{");
                 if (beginJsonTag > 0 && json.startsWith("AT#DWSENDR=") && json.endsWith("}")) {
 
                     json = json.substring(beginJsonTag);
@@ -134,6 +134,7 @@ public class BluetoothDiscoveryListener implements DiscoveryListener {
                             log.info("bluetooth command is:{}", command.getCommand());
 
                         } catch (Exception e) {
+                            mTelitConverter.resetToken();
                             e.printStackTrace();
                             log.error(e.getMessage(), e);
                         }
