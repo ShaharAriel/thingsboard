@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
 import lombok.extern.slf4j.Slf4j;
+import model.BridgeConfig;
 import model.DwCommand;
 import org.thingsboard.client.tools.RestClient;
 import org.thingsboard.server.common.data.Device;
@@ -14,6 +15,8 @@ import org.thingsboard.server.common.data.id.DeviceId;
 import org.thingsboard.server.common.msg.TbMsg;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -22,11 +25,21 @@ import java.util.List;
 public class TelitConverter {
 
     private static final String DEFAULT_TYPE = "Default";
-    public static final String STATE_SUFFIX = "state";
-    private final RestClient mRestClient;
+    private static final String STATE_SUFFIX = "state";
+    private final BridgeConfig mConfig;
 
-    public TelitConverter() {
-        mRestClient = new RestClient("http://localhost:8080");
+    private RestClient mRestClient;
+
+    public TelitConverter(BridgeConfig config) {
+
+        mConfig = config;
+        try {
+            URL url = new URL(config.getSchema(), config.getHost(), config.getPort(), "");
+            mRestClient = new RestClient(url.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
     }
 
 
@@ -38,7 +51,8 @@ public class TelitConverter {
 
         try {
             if (!mRestClient.isLogin())
-                mRestClient.login("sariel@ravtech.co.il", "1q2w3e4r");
+                mRestClient.login(mConfig.getUserName(), mConfig.getPassword());
+
         } catch (Exception e) {
             e.printStackTrace();
             log.error(e.getMessage(), e);
@@ -98,13 +112,13 @@ public class TelitConverter {
 
         String ts = telitMsg.getParams().getTs();
         String key = telitMsg.getParams().getKey();
-
+        Date date = null;
         if (!suffix.isEmpty())
             suffix = "_" + suffix;
 
         if (ts != null) {
 
-            Date date = TimeFormatter.toDate(ts);
+            date = TimeFormatter.toDate(ts);
 
             if (date != null) {
 
@@ -113,11 +127,10 @@ public class TelitConverter {
                 elm.addProperty(key + suffix, telitMsg.getParams().getValue());
                 jsonObject.add("values", elm);
 
-            } else {
-
-                jsonObject.addProperty(key + suffix, telitMsg.getParams().getValue());
-
             }
+        }
+        if (date == null) {
+            jsonObject.addProperty(key + suffix, telitMsg.getParams().getValue());
         }
 
         return jsonObject.toString();

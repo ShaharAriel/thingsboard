@@ -1,12 +1,11 @@
 package com.ucontrol.bridge;
 
-import bridge.BluetoothDiscoveryListener;
-import bridge.TelitMsg;
 import com.devicewise.tr50.constants.DwOpenCommands;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import converter.TelitConverter;
+import model.BridgeConfig;
 import model.DwCommand;
 import model.Params;
 import org.junit.Test;
@@ -16,7 +15,7 @@ import java.util.Scanner;
 
 public class DwToTbTest {
 
-    public static String getTelitJson() throws JsonProcessingException {
+    private static String getTelitJson() throws JsonProcessingException {
 
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode jsonNodes = mapper.createObjectNode();
@@ -48,18 +47,21 @@ public class DwToTbTest {
 
 
     public static void main(String[] args) {
-        TelitConverter telitConverter = new TelitConverter();
+        TelitConverter telitConverter = new TelitConverter(getBridgeConfig());
         DwCommand telitMsg = new DwCommand();
-        telitMsg.command = DwOpenCommands.CMD_API_THING_CREATE;
+        telitMsg.command = DwOpenCommands.CMD_API_PROPERTY_PUBLISH;
         telitMsg.params = new Params();
-        telitMsg.params.setKey("Arm_mmm12");
+        telitMsg.params.setThingKey("Arm_10");
+        telitMsg.params.setKey("WU_WATER");
+        telitMsg.params.setValue(123456);
         telitConverter.from(telitMsg);
 
     }
 
     @Test
     public void testJson2Tb() throws JsonProcessingException {
-        TelitConverter mTelitConverter = new TelitConverter();
+
+        TelitConverter mTelitConverter = new TelitConverter(getBridgeConfig());
 
         Scanner scanner = new Scanner(getTelitJson());
         String data = "";
@@ -94,6 +96,11 @@ public class DwToTbTest {
             }
 
         }
+    }
+
+    private static BridgeConfig getBridgeConfig() {
+        return new BridgeConfig("rokeha_user@gmail.com",
+                "12345678", "http", 8080, "127.0.0.1");
     }
 
 }

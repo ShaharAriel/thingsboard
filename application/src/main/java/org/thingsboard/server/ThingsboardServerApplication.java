@@ -28,7 +28,7 @@ import java.util.Arrays;
 @EnableAsync
 @EnableSwagger2
 @EnableScheduling
-@ComponentScan({"org.thingsboard.server","bridge"})
+@ComponentScan({"org.thingsboard.server","org.thingsboard.server.service.bridge","bridge"})
 public class ThingsboardServerApplication {
 
     private static final String SPRING_CONFIG_NAME_KEY = "--spring.config.name";

@@ -180,10 +180,10 @@ cassandra:
 
 # SQL configuration parameters
 sql:
-    # Specify executor service type used to perform timeseries insert tasks: SINGLE FIXED CACHED
-    ts_inserts_executor_type: "${SQL_TS_INSERTS_EXECUTOR_TYPE:fixed}"
-    # Specify thread pool size for FIXED executor service type
-    ts_inserts_fixed_thread_pool_size: "${SQL_TS_INSERTS_FIXED_THREAD_POOL_SIZE:10}"
+  # Specify executor service type used to perform timeseries insert tasks: SINGLE FIXED CACHED
+  ts_inserts_executor_type: "${SQL_TS_INSERTS_EXECUTOR_TYPE:fixed}"
+  # Specify thread pool size for FIXED executor service type
+  ts_inserts_fixed_thread_pool_size: "${SQL_TS_INSERTS_FIXED_THREAD_POOL_SIZE:10}"
 
 # Actor system parameters
 actors:
@@ -271,25 +271,25 @@ updates:
 
 # spring CORS configuration
 spring.mvc.cors:
-   mappings:
-     # Intercept path
-      "/api/auth/**":
-         #Comma-separated list of origins to allow. '*' allows all origins. When not set,CORS support is disabled.
-         allowed-origins: "*"
-         #Comma-separated list of methods to allow. '*' allows all methods.
-         allowed-methods: "POST,GET,OPTIONS"
-         #Comma-separated list of headers to allow in a request. '*' allows all headers.
-         allowed-headers: "*"
-         #How long, in seconds, the response from a pre-flight request can be cached by clients.
-         max-age: "1800"
-         #Set whether credentials are supported. When not set, credentials are not supported.
-         allow-credentials: "true"
-      "/api/v1/**":
-         allowed-origins: "*"
-         allowed-methods: "*"
-         allowed-headers: "*"
-         max-age: "1800"
-         allow-credentials: "true"
+  mappings:
+    # Intercept path
+    "/api/auth/**":
+      #Comma-separated list of origins to allow. '*' allows all origins. When not set,CORS support is disabled.
+      allowed-origins: "*"
+      #Comma-separated list of methods to allow. '*' allows all methods.
+      allowed-methods: "POST,GET,OPTIONS"
+      #Comma-separated list of headers to allow in a request. '*' allows all headers.
+      allowed-headers: "*"
+      #How long, in seconds, the response from a pre-flight request can be cached by clients.
+      max-age: "1800"
+      #Set whether credentials are supported. When not set, credentials are not supported.
+      allow-credentials: "true"
+    "/api/v1/**":
+      allowed-origins: "*"
+      allowed-methods: "*"
+      allowed-headers: "*"
+      max-age: "1800"
+      allow-credentials: "true"
 
 # spring serve gzip compressed static resources
 spring.resources.chain:
@@ -489,3 +489,10 @@ transport:
     bind_address: "${COAP_BIND_ADDRESS:0.0.0.0}"
     bind_port: "${COAP_BIND_PORT:5683}"
     timeout: "${COAP_TIMEOUT:10000}"
+
+bridge:
+  username: "${BRIDGE_USER:rokeha_user@gmail.com}"
+  password: "${BRIDGE_PASS:12345678}"
+  schema: "${BRIDGE_BIND_SCHEMA:http}"
+  host: "${BRIDGE_BIND_ADDRESS:127.0.0.1}"
+  port: "${BRIDGE_BIND_PORT:8080}"

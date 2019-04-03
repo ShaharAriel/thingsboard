@@ -3,6 +3,7 @@ package bridge;
 
 import converter.TelitConverter;
 import lombok.extern.slf4j.Slf4j;
+import model.BridgeConfig;
 import model.DwCommand;
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
@@ -16,7 +17,6 @@ import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.ssl.SSLContexts;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.stereotype.Service;
 
 import javax.bluetooth.*;
 import javax.microedition.io.Connector;
@@ -31,11 +31,10 @@ import java.security.cert.X509Certificate;
 import java.util.List;
 
 @Slf4j
-@Service
 public class BluetoothDiscoveryListener implements DiscoveryListener {
 
-    public static final int UUID_COMM = 0x1101;
-    public static final UUID[] UUID_SET = new UUID[1];
+    private static final int UUID_COMM = 0x1101;
+    private static final UUID[] UUID_SET = new UUID[1];
 
     static {
         UUID_SET[0] = new UUID(UUID_COMM);
@@ -44,8 +43,8 @@ public class BluetoothDiscoveryListener implements DiscoveryListener {
     private DiscoveryAgent agent;
     private TelitConverter mTelitConverter;
 
-    public BluetoothDiscoveryListener() {
-        mTelitConverter = new TelitConverter();
+    public BluetoothDiscoveryListener(BridgeConfig config) {
+        mTelitConverter = new TelitConverter(config);
 
     }
 
