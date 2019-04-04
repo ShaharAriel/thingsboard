@@ -51,9 +51,10 @@ public class DwToTbTest {
         DwCommand telitMsg = new DwCommand();
         telitMsg.command = DwOpenCommands.CMD_API_PROPERTY_PUBLISH;
         telitMsg.params = new Params();
+        telitMsg.params.setTs("2019-04-04T17:38:40Z");
         telitMsg.params.setThingKey("Arm_10");
         telitMsg.params.setKey("WU_WATER");
-        telitMsg.params.setValue(123456);
+        telitMsg.params.setValue(11);
         telitConverter.from(telitMsg);
 
     }

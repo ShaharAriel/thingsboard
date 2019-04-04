@@ -3,6 +3,7 @@ package com.devicewise.tr50.helpers;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 public class TimeFormatter {
 	
@@ -21,9 +22,11 @@ public class TimeFormatter {
 	public static Date toDate(String RFC3339)
 	{
 		try {
-			return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(RFC3339);
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+			sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+			return sdf.parse(RFC3339);
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		}
 		return null;

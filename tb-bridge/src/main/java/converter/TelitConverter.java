@@ -118,6 +118,7 @@ public class TelitConverter {
 
         if (ts != null) {
 
+//            String rfc3339 = TimeFormatter.toRFC3339(ts);
             date = TimeFormatter.toDate(ts);
 
             if (date != null) {
